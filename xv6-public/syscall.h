@@ -21,3 +21,5 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_clone  22
+#define SYS_acquire_lock 23
+#define SYS_release_lock 24
