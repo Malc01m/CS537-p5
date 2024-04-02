@@ -416,6 +416,13 @@ scheduler(void)
       if (p->nice < min_nice) {
         min_nice = p->nice;
         min_nice_p = p;
+      } else if (p->nice == min_nice) {
+        if (p == c->proc) {
+          continue;
+        } else {
+          min_nice = p->nice;
+          min_nice_p = p;
+        }
       }
     }
 
