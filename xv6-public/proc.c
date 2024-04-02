@@ -93,6 +93,8 @@ found:
   p->nclone = 0;
   p->sleepticks = -1;
   p->chan = 0;
+  // P5
+  p->nice = 0;
 
   release(&ptable.lock);
 
@@ -394,6 +396,7 @@ void
 scheduler(void)
 {
   struct proc *p;
+  struct proc *min_nice_p;
   struct cpu *c = mycpu();
   c->proc = 0;
   
@@ -401,28 +404,47 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
-    // Loop over process table looking for process to run.
+    // Loop over process table looking for nicest runnable process.
     acquire(&ptable.lock);
+    
+    int min_nice = 20;
+    min_nice_p = ptable.proc;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
+      if (p->nice < min_nice) {
+        min_nice = p->nice;
+        min_nice_p = p;
+      } else if (p->nice == min_nice) {
+        if (p == c->proc) {
+          continue;
+        } else {
+          min_nice = p->nice;
+          min_nice_p = p;
+        }
+      }
+    }
+
+    // Switch only if a runnable process was found
+    if (min_nice != 20) {
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+      c->proc = min_nice_p;
+      switchuvm(min_nice_p);
+      min_nice_p->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
+      swtch(&(c->scheduler), min_nice_p->context);
       switchkvm();
 
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
     }
-    release(&ptable.lock);
 
+    // Release regardless of outcome
+    release(&ptable.lock);
   }
 }
 
