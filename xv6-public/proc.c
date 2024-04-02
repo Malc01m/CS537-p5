@@ -93,8 +93,6 @@ found:
   p->nclone = 0;
   p->sleepticks = -1;
   p->chan = 0;
-  // P5
-  p->nice = 0;
 
   release(&ptable.lock);
 
