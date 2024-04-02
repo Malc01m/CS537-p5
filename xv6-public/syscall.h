@@ -21,3 +21,5 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_clone  22
+// P5
+#define SYS_nice   23
