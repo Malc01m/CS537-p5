@@ -1,3 +1,6 @@
+#ifndef _USER_H_
+#define _USER_H_
+#include "mutex.h"
 struct stat;
 struct rtcdate;
 
@@ -26,6 +29,9 @@ int uptime(void);
 int clone(void (*)(void*), void*, void*);
 // P5
 int nice(int);
+void macquire(mutex *m);
+void mrelease(mutex *m);
+void minit(mutex *m);
 
 // ulib.c
 int stat(const char*, struct stat*);
@@ -40,3 +46,4 @@ void* memset(void*, int, uint);
 void* malloc(uint);
 void free(void*);
 int atoi(const char*);
+#endif

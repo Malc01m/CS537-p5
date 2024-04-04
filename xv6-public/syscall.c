@@ -106,6 +106,9 @@ extern int sys_uptime(void);
 extern int sys_clone(void);
 // P5
 extern int sys_nice(void);
+extern int sys_macquire(void);
+extern int sys_mrelease(void);
+extern int sys_minit(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -131,6 +134,9 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_clone]   sys_clone,
 [SYS_nice]    sys_nice,
+[SYS_macquire] sys_macquire,
+[SYS_mrelease] sys_mrelease,
+[SYS_minit]    sys_minit,
 };
 
 void

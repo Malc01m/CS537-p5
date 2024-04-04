@@ -23,3 +23,6 @@
 #define SYS_clone  22
 // P5
 #define SYS_nice   23
+#define SYS_macquire 24
+#define SYS_mrelease 25
+#define SYS_minit 26

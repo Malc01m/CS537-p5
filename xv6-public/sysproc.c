@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "mutex.h"
 
 int
 sys_fork(void)
@@ -127,4 +128,56 @@ sys_nice(void)
   myproc()->nice += inc;
 
   return 0;
+}
+
+int
+sys_macquire(void)
+{
+  char *x;
+  if (argptr(0, &x, sizeof(mutex)) != 0)
+  {
+    return -1;
+  }
+  mutex *m = (mutex*) x;
+
+  acquire(&m->lk);
+  //implement here
+  while (xchg(&m->locked, 1) != 0){
+    sleep (m, &m->lk);
+  }
+  release(&m->lk);
+  
+ return 0;
+}
+
+int
+sys_mrelease(void)
+{
+  char *x;
+  if (argptr(0, &x, sizeof(mutex)) != 0) 
+  {
+    return -1;
+  }
+  mutex *m = (mutex*) x;
+
+  acquire(&m->lk);
+
+if(xchg(&m->locked, 0) != 1) {
+  release(&m->lk);
+  return -1;
+}
+wakeup(m);
+release(&m->lk);
+  return 0;
+}
+
+int sys_minit(void) {
+  char *x;
+  if (argptr(0, &x, sizeof(mutex)) != 0) {
+    return -1;
+  }
+  mutex *m = (mutex*) x;
+     m->locked = 0;
+     m->pid = 0;
+    return 0;
 }
