@@ -172,7 +172,7 @@ release(&m->lk);
 }
 
 int sys_minit(void) {
-  char *x;
+  char *x; 
   if (argptr(0, &x, sizeof(mutex)) != 0) {
     return -1;
   }
